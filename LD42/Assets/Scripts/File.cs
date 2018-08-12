@@ -8,6 +8,7 @@ public class File : MonoBehaviour {
     public Harddrive hdd;
 
     public SpriteRenderer sr;
+    public Color selectedColour;
 
     public Vector3 desktopPosition;
     public Vector3 currentPosition;
@@ -20,17 +21,21 @@ public class File : MonoBehaviour {
         hdd = FindObjectOfType<Harddrive>();
         desktopPosition = currentPosition = transform.position;
         zPosition = desktopPosition.z;
-        sr.color = hdd.fileColours[(int)type];
+        sr.sprite = hdd.fileSprites[(int)type];
 
         Vector3 newPosition;
         if (GetNearestAvailable(currentPosition, 10, out newPosition)) {
-            currentPosition = newPosition;
+            currentPosition = desktopPosition = newPosition;
         } else {
             currentPosition = desktopPosition;
         }
         transform.position = currentPosition;
 
         hdd.AddFile(this);
+    }
+
+    void Update () {
+        sr.color = isSelected ? selectedColour : Color.white;
     }
 
     float Nearest(float num, float roundTo) {
@@ -51,7 +56,7 @@ public class File : MonoBehaviour {
 
         hits = Physics2D.RaycastAll(ray.origin, ray.direction, 10f);
 
-        Debug.DrawRay(ray.origin, ray.direction, Color.red, 5f);
+        //Debug.DrawRay(ray.origin, ray.direction, Color.red, 5f);
 
         foreach (RaycastHit2D hit in hits) {
             if (hit.collider.gameObject != gameObject && hit.collider.CompareTag("File")) {
@@ -59,6 +64,7 @@ public class File : MonoBehaviour {
             }
         }
 
+        if (hits.Length == 0) return true;
         return false;
     }
 

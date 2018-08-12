@@ -20,16 +20,19 @@ public class Spawner : MonoBehaviour {
     public float zPosition;
     public float spawnX;
     public float spawnY;
-    public GameObject plane;
+    public Transform offsetPoint;
 
     private float lastSpawnTick;
 
+    private float startTime;
+
     void Start () {
         for (int i = 0; i < initialSpawn; i++) SpawnFile();
+        startTime = Time.time;
     }
 
     public Vector3 RandomPosition() {
-        Vector3 newVec = plane.transform.position + 
+        Vector3 newVec = offsetPoint.position +
                          new Vector3(Random.Range(-spawnX, spawnX),
                                      Random.Range(-spawnY, spawnY),
                                      zPosition);
@@ -66,8 +69,12 @@ public class Spawner : MonoBehaviour {
 
         lastSpawnTick -= Time.deltaTime * (Random.value * spawnChanceRandom / spawnIntervalFactorDelta);
 
-        if (spawnIntervalFactor > 2.0f) {
-            spawnIntervalFactor -= spawnIntervalFactorDelta * Time.deltaTime;
+        if (spawnIntervalFactor > 2.0f || (Time.time - startTime) > 150) {
+            if (spawnIntervalFactor > 1.35f) {
+                spawnIntervalFactor -= spawnIntervalFactorDelta * Time.deltaTime;    
+            } else {
+                spawnIntervalFactor = 1.35f;
+            }
         } else {
             spawnIntervalFactor = 2.0f;
         }

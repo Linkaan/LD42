@@ -14,10 +14,11 @@ public enum FileType {
 
 public class Harddrive : MonoBehaviour {
 
-    public Color[] fileColours;
+    public Sprite[] fileSprites;
     public float[] fileSizes; // in MB
     public float totalSize; // in MB
 
+    public SoundPlayer sfxPlayer;
     public Slider spaceUsedSlider;
     public TextMeshProUGUI spaceUsedText;
     public ScoreManager scoreMgr;
@@ -32,10 +33,14 @@ public class Harddrive : MonoBehaviour {
     public float spaceFree;
 
     public void AddFile(File file) {
+        if (file.type == FileType.Worm) {
+            sfxPlayer.PlaySFX(sfxPlayer.wormSFX);
+        }
         files.Add(file);
     }
 
     public void DeleteFile(File file) {
+        sfxPlayer.PlaySFX(sfxPlayer.saveFileSFX);
         scoreMgr.AddPoints(file);
         files.Remove(file);
     }
@@ -58,6 +63,7 @@ public class Harddrive : MonoBehaviour {
             Destroy(selector);
             Destroy(spawner);
             gameOverMenu.SetActive(true);
+            sfxPlayer.PlaySFX(sfxPlayer.loseSFX);
         }
     }
 	

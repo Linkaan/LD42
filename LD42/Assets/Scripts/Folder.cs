@@ -7,11 +7,8 @@ public class Folder : MonoBehaviour {
     public FileType type;
     public Harddrive hdd;
 
-    public SpriteRenderer srName;
-
     void Start () {
         hdd = FindObjectOfType<Harddrive>();
-        srName.color = hdd.fileColours[(int)type];
     }
 
     public bool AddFile(File file) {
@@ -21,6 +18,7 @@ public class Folder : MonoBehaviour {
             return true;
         }
 
+        hdd.sfxPlayer.PlaySFX(hdd.sfxPlayer.failSFX);
         return false;
     }
 }
